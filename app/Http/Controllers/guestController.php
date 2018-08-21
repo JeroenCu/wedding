@@ -25,6 +25,7 @@ class guestController extends Controller
         $guest->attending = $request->attending;
         $guest->vegetarian = $request->vegetarian;
         $guest->songRequests = $request->songRequests;
+        $guest->hash = $request->key;
         $guestData->used = true;
 
         $guest->save();

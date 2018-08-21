@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Key;
-use App\Guest;
+use App\InvitationType;
 use Webpatser\Uuid\Uuid;
 
 class keysController extends Controller
@@ -15,6 +15,13 @@ class keysController extends Controller
         $key->email = $request->email;
         $key->hash = Uuid::generate();
         $key->save();
+
+        $invitationType = new InvitationType;
+        $invitationType->hash = $key->hash;
+        $invitationType->reception = $request->reception;
+        $invitationType->dinner = $request->dinner;
+        $invitationType->dessert = $request->dessert;
+        $invitationType->save();
 
         //->save() returns empty here for some reason, even though it works for other models in the same way
         $newKey = Key::where('hash', $key->hash)->first();
