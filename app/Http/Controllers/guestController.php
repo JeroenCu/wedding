@@ -35,7 +35,7 @@ class guestController extends Controller
     }
 
     public function getAllGuests() {
-        $guests = Guest::all();
+        $guests = Guest::join('invitationTypesPerGuest', 'guests.hash', '=', 'invitationTypesPerGuest.hash')->get();
         return response(json_encode($guests));
     }
 }
