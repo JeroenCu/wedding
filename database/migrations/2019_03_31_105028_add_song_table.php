@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGuestsTable extends Migration
+class AddSongTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateGuestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('guests', function (Blueprint $table) {
+        Schema::create('songs', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('title')->nullable(false);
+            $table->string('artist')->nullable(false);
+            $table->integer('guestId')->references('id')->on('guests');;
             $table->timestamps();
-            $table->string('name');
-            $table->boolean('attending')->default(false);
-            $table->boolean('vegetarian')->default(false);
-            $table->string('songRequests');
         });
     }
 
@@ -30,6 +29,6 @@ class CreateGuestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('guests');
+        Schema::drop('songs');
     }
 }
