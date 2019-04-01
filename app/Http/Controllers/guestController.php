@@ -8,28 +8,38 @@ use App\Guest;
 
 class guestController extends Controller
 {
-    public function rsvp(Request $request) {
-        $guest = Guest::where('name', $request->name)->orWhere('plus1name', $request->name)->first();
+    public function rsvpGuest(Request $request) {
+        $name = $request->input('name');
+        if (!isset($name)) {
+            return response()->json([ 'errorCode' => 404, 'error' => 'name cannot be null' ], 404);
+        }
+        $guest = Guest::where('name', $name)->orWhere('plus1name', $name)->first();
         if (!$guest) {
             return response()->json([ 'errorCode' => 404, 'error' => 'unregistered guest' ], 404);
         }
 
-        $guest->rsvp             = !!$request->rsvp;
-        $guest->veggie           = $request->veggie;
+        $guest->rsvp             = $request->input('rsvp');
+        $guest->veggie           = $request->input('veggie');
         $guest->responded        = true;
-        $guest->plus1attending   = !!$request->plus1attending;
-        $guest->plus1veggie      = !!$request->plus1veggie;
+        if ($guest->plus1) {
+            $guest->plus1attending   = !!$request->input('plus1attending');
+            $guest->plus1veggie      = !!$request->input('plus1veggie');
+        }
         $guest->save();
 
-        Song::where('guestId', $guest->id)->delete();
+        if($guest->feest) {
+            $deletedSongs = Song::where('guestId', $guest->id)->pluck('id')->toArray();
+            Song::destroy($deletedSongs);
 
-        $songs = json_decode($request->songs);
-        foreach($songs as $song) {
-            $newSong            = new Song;
-            $newSong->guestId   = $guest->id;
-            $newSong->title     = $song->title;
-            $newSong->artist    = $song->artist;
-            $newSong->save();
+            $songs = $request->input('songs');
+
+            foreach($songs as $song) {
+                $newSong            = new Song;
+                $newSong->guestId   = $guest->id;
+                $newSong->title     = $song['title'];
+                $newSong->artist    = $song['artist'];
+                $newSong->save();
+            }
         }
 
         return response(json_encode($guest));

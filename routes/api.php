@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/test', 'testController@index');
 
+Route::post('/guests/rsvp', 'guestController@rsvpGuest');
+
 Route::post('/guests/newGuest', 'guestController@addGuest');
 
 Route::post('/guests/checkGuest', 'guestController@checkGuest');
