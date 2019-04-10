@@ -69,6 +69,15 @@ class guestController extends Controller
             return response()->json([ 'errorCode' => 404, 'error' => 'name cannot be null' ], 404);
         }
         $guest = Guest::where('name', $name)->orWhere('plus1name', $name)->first();
+        if (!$guest) {
+            return response()->json([ 'errorCode' => 404, 'error' => 'unknown guest' ], 404);
+        }
         return response(json_encode($guest));
+    }
+
+    public function csvGuests() {
+        $guests = Guest::orderBy('responded')->get(); // All guests
+        $csvExporter = new \Laracsv\Export();
+        $csvExporter->build($guests, ['name', 'RSVP', 'responded', 'receptie', 'diner', 'feest', 'veggie', 'plus1', 'plus1name', 'plus1attending', 'plus1veggie', 'updated_at'])->download();
     }
 }

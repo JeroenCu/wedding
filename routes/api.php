@@ -13,14 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::get('/test', 'testController@index');
+
+Route::get('/songs/csv', 'songsController@csvSongs');
 
 Route::post('/guests/rsvp', 'guestController@rsvpGuest');
 
 Route::post('/guests/newGuest', 'guestController@addGuest');
 
 Route::post('/guests/checkGuest', 'guestController@checkGuest');
+
+Route::get('/guests/csv', 'guestController@csvGuests');
