@@ -34,11 +34,15 @@ class guestController extends Controller
             $songs = $request->input('songs');
 
             foreach($songs as $song) {
-                $newSong            = new Song;
-                $newSong->guestId   = $guest->id;
-                $newSong->title     = $song['title'];
-                $newSong->artist    = $song['artist'];
-                $newSong->save();
+                if (in_array('title', $song)) {
+                    $newSong            = new Song;
+                    $newSong->guestId   = $guest->id;
+                    $newSong->title     = $song['title'];
+                    if (in_array('artist', $song)) {
+                        $newSong->artist    = $song['artist'];
+                    }
+                    $newSong->save();
+                }
             }
         }
 
